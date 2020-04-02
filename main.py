@@ -1,4 +1,6 @@
 import shutil
+import sys
+import fileinput
 
 
 def findStart(lines):
@@ -34,17 +36,32 @@ def createINIFile(path):
     songName = path[path.rindex("-") + 2:].title()
     artist = path[path.rindex("/") + 1:path.rindex("-")].title()
 
-    # open(path + "/song.ini", "a") as ini:
+    for line in fileinput.input(iniFile, inplace=True):
+        print(line.replace("name =", "name =" + songName).strip())
+    for line in fileinput.input(iniFile, inplace=True):
+        print(line.replace("artist =", "artist =" + artist).strip())
 
     print(songName, "by", artist)
     print(iniFile)
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        path = sys.argv[1]
+    else:
+        path = "D:/Clone Hero/badsongs.txt"
 
-    with open("D:/Clone Hero/badsongs.txt", "r") as badSongs:
-        lines = badSongs.readlines()
+    print(f"Checking path: {path}")
+
+    try:
+        with open(path, "r") as badSongs:
+            lines = badSongs.readlines()
+    except FileNotFoundError:
+        print(f"No file found at this path: {path}")
+        exit(-3)
+
     songs = stripSongs(lines, findStart(lines), findEnd(lines))
 
-    createINIFile(songs[0])
+    for song in songs:
+        createINIFile(song)
     print(songs)
