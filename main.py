@@ -23,8 +23,9 @@ def findBlanks(lines):
 
 def stripSongs(lines, start, end):
     songs = []
-    for line in lines[badSongINIStart:badSongINIEnd:]:
-        songs.append(line.rstrip("\n"))
+    for line in lines[start:end:]:
+        l = line.replace("\\", "/")
+        songs.append(l.rstrip("\n"))
     return songs
 
 
@@ -34,7 +35,6 @@ if __name__ == "__main__":
         lines = badSongs.readlines()
         badSongINIStart = findStart(lines)
         badSongINIEnd = findEnd(lines, badSongINIStart)
-    badSongs.close()
 
     songs = stripSongs(lines, badSongINIStart, badSongINIEnd)
     print(songs)
