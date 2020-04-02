@@ -1,8 +1,8 @@
 def findStart(lines):
-    for i,line in enumerate(lines):
+    for i, line in enumerate(lines):
         if "song.ini" in line:
             return i + 1
-    return -1
+    raise ValueError("No valid start line. No songs are missing .ini files.")
 
 
 def findEnd(lines, start):
@@ -10,7 +10,7 @@ def findEnd(lines, start):
     for lineNo in blankLines:
         if lineNo > start:
             return lineNo
-    return -1
+    raise ValueError("No valid end line. Perhaps there isn't a blank line at the end of the file?")
 
 
 def findBlanks(lines):
@@ -33,8 +33,18 @@ if __name__ == "__main__":
 
     with open("D:/Clone Hero/badsongs.txt", "r") as badSongs:
         lines = badSongs.readlines()
+
+    try:
         badSongINIStart = findStart(lines)
+    except ValueError as err:
+        print(err)
+        exit(-1)
+
+    try:
         badSongINIEnd = findEnd(lines, badSongINIStart)
+    except ValueError as err:
+        print(err)
+        exit(-2)
 
     songs = stripSongs(lines, badSongINIStart, badSongINIEnd)
     print(songs)
